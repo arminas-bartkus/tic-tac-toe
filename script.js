@@ -4,8 +4,10 @@ const initial = (function () {
         gameBoard: [["","",""],
                     ["","",""],
                     ["","",""]],
-                }
 
+                
+                }
+ 
 // Player Definitions
     const playerOne = {
         playerName: {
@@ -27,6 +29,8 @@ const initial = (function () {
   
 })()
 
+console.log(initial.gameBoard[1]);
+
 const gameController = {
 
     checkForWin: function() {
@@ -38,17 +42,13 @@ const gameController = {
     declareWinner: function() {
     },
 
-createMark: function(sign, [[row], [column]]) {
-        let playerSign = sign;
-        let location = [row, column];
+createMark: function(sign, row, column) {
+  
+        let currentGameBoard = initial.gameBoard.gameBoard;
 
-        let currentGameBoard = initial.gameBoard;
-        
-        currentGameBoard[location] = playerSign;
-        console.log(currentGameBoard);
-        console.log(initial.gameBoard)
+        foundRow = currentGameBoard[row];
+        foundRow[column] = sign;
+
+        currentGameBoard[row] = foundRow;
     },
-
-
 }
-gameController.createMark("X", [[1],[1]]);
