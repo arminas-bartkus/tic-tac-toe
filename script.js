@@ -1,11 +1,9 @@
-const initial = (function () {
+const data = (function () {
 
     const gameBoard = {
-        gameBoard: [["","",""],
-                    ["","",""],
-                    ["","",""]],
-
-                
+        gameBoard: [["1","X","X"],
+                    ["4","","6"],
+                    ["7","8","9"]],
                 }
  
 // Player Definitions
@@ -15,6 +13,7 @@ const initial = (function () {
             lastName: "Bartkus",
         },
         playerScore: 0,
+        playerMark: "X"
     }
 
     const playerTwo = {
@@ -23,17 +22,43 @@ const initial = (function () {
             lastName: "Beattie",
         },
         playerScore: 0,
+        playerMark: "O"
     }
 
     return {playerOne, playerTwo, gameBoard};
   
 })()
 
-console.log(initial.gameBoard[1]);
-
 const gameController = {
 
     checkForWin: function() {
+        
+        let currentGameBoard = data.gameBoard.gameBoard;
+        let [[a, b, c], [d, e, f], [g, h, i]] = data.gameBoard.gameBoard;
+
+
+        const isFullCriteria = (gridSquare) => {return gridSquare !== ""}
+        
+        let brokenDownBoard = [];
+        currentGameBoard.forEach((item) => item.forEach((element) => {brokenDownBoard.push(element)}));
+
+        brokenDownBoard.every(isFullCriteria); 
+    
+        if  ((a === b && b === c) || (d === e && e === f) || (g === h && h === i) || (a === d && d === g) || (b === e && e === h)
+             || (c === f && f === i) || (a === e && e === i) || (c === e && e === g)) {
+            console.log("win")
+            this.declareWinner();
+        }
+
+        else if (brokenDownBoard.every(isFullCriteria)) {
+            console.log("draw");
+        }
+
+        else {
+            this.managePlayerTurns();
+            console.log("continue game")
+        }
+
     },
 
     managePlayerTurns: function() {
@@ -44,11 +69,13 @@ const gameController = {
 
 createMark: function(sign, row, column) {
   
-        let currentGameBoard = initial.gameBoard.gameBoard;
+        const currentGameBoard = data.gameBoard.gameBoard;
 
-        foundRow = currentGameBoard[row];
+        const foundRow = currentGameBoard[row];
         foundRow[column] = sign;
 
-        currentGameBoard[row] = foundRow;
+        this.checkForWin(currentGameBoard);
     },
 }
+
+gameController.createMark("X", 0, 0)
