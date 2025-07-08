@@ -2,7 +2,6 @@ const data = (function () {
     //Get Dom Elements
     
     gridCells = document.querySelectorAll(".cell");
-    console.log(gridCells)
     addListeners();
     
     
@@ -127,12 +126,10 @@ const gameController = {
     createMark: function(row, column) {
     
         let sign;
-    
+
         if(this.checkForOverrideAttempts(row, column)) {}
 
         else {
-
-      
 
             if (data.playerOne.isMyTurn === true) {
                 sign = "X";
@@ -142,6 +139,24 @@ const gameController = {
             }
 
             //Place x or o at location
+
+            newSymbol = document.createElement("img");
+
+            if (sign === "X") {
+                newSymbol.setAttribute("src", "./img/crossed.png");
+                newSymbol.setAttribute("alt", "A cross");
+            }
+
+            else {
+                newSymbol.setAttribute("src", "./img/letter-o.png");
+                newSymbol.setAttribute("alt", "A nought")
+            }
+            
+            //grid cells is currently global, fix?
+            
+            stringForQuerySelector = "div[data-row = '" + row.toString() + "']" + "[data-col='" + column.toString() +"']";
+            cellToEdit = document.querySelector(stringForQuerySelector);
+            cellToEdit.appendChild(newSymbol);
 
             const currentGameBoard = data.gameBoard.gameBoard;
             const foundRow = currentGameBoard[row];

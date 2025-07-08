@@ -29,6 +29,10 @@ body {
     height: 200px;
     border: solid black;
     margin: 2px;
+    display: flex;
+    flex: 0;
+    justify-content: center;
+    align-items: center;
  
 }
 
@@ -47,6 +51,10 @@ body {
 }
 .remove-bottom {
     border-bottom: none;
+}
+
+img[src="./img/letter-o.png"] {
+    width: 80%;
 }
 
 
