@@ -27,6 +27,13 @@ const data = (function () {
         isMyTurn: null,
     }
 
+    // add listeners
+
+    // addSquareListeners: function() {
+
+    // }
+
+
     return {playerOne, playerTwo, gameBoard};
   
 })()
