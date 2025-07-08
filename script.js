@@ -50,7 +50,7 @@ const gameController = {
     checkForWin: function(currentGameBoard) {
         
         console.log(currentGameBoard);
-        let [row1, row2, row3] = currentGameBoard;
+        let [[a, b, c], [d, e, f], [g, h, i]] = currentGameBoard;
 
 
 
@@ -64,11 +64,13 @@ const gameController = {
 
         brokenDownBoard.every(isFullCriteria); 
     
-        // if  ((a === b && b === c) || (d === e && e === f) || (g === h && h === i) || (a === d && d === g) || (b === e && e === h)
-        //      || (c === f && f === i) || (a === e && e === i) || (c === e && e === g)) {
-        //     console.log("win")
-        //     this.declareWinner();
-        // }
+        if  ((a === b && b === c && (b === "X" || b === "O")) || (d === e && e === f && (e === "X" || e === "O")) 
+        || (g === h && h === i && (h === "X" || h === "O")) || (a === d && d === g && (d === "X" || d === "O")) 
+        || (b === e && e === h && (e === "X" || e === "O")) || (c === f && f === i && (f === "X" || f === "O")) 
+        || (a === e && e === i && (e === "X" || e === "O")) || (c === e && e === g) && (e === "X" || e === "O")) {
+            console.log("win")
+            this.declareWinner();
+        }
 
         // else
          if (brokenDownBoard.every(isFullCriteria)) {
@@ -125,9 +127,10 @@ createMark: function(row, column) {
 gameController.startGame();
 gameController.createMark(1,1);
 gameController.createMark(1,2);
+gameController.createMark(0,0);
 gameController.createMark(1,0);
 
-gameController.createMark(0,0);
+
 
 gameController.createMark(0,1);
 
