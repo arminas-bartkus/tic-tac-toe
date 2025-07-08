@@ -1,5 +1,11 @@
 const data = (function () {
-
+    //Get Dom Elements
+    
+    gridCells = document.querySelectorAll(".cell");
+    console.log(gridCells)
+    addListeners();
+    
+    
     const gameBoard = {
         gameBoard: [["","",""],
                     ["","",""],
@@ -27,16 +33,19 @@ const data = (function () {
         isMyTurn: null,
     }
 
-    // add listeners
-
-    // addSquareListeners: function() {
-
-    // }
+    function addListeners() {
+         
+        gridCells.forEach((cell => {
+            cell.addEventListener("click", function() {
+                gameController.createMark(cell.dataset.row, cell.dataset.col); 
+            })
+        }));
+    }
 
 
     return {playerOne, playerTwo, gameBoard};
   
-})()
+})();
 
 const gameController = {
 
@@ -145,10 +154,3 @@ const gameController = {
 }
 
 gameController.startGame();
-
-gameController.createMark(0,0)
-gameController.createMark(2,0)
-gameController.createMark(1,1)
-gameController.createMark(2,1)
-gameController.createMark(0,2)
-gameController.createMark(2,2)
