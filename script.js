@@ -1,11 +1,11 @@
 const data = (function () {
     //Get Dom Elements
     
-    gridCells = document.querySelectorAll(".cell");
+    const gridCells = document.querySelectorAll(".cell");
     
     const playerOneModal = document.querySelector(".playerOneModal");
     const playerTwoModal = document.querySelector(".playerTwoModal");
-    winnerDisplayModal = document.querySelector(".winnerDisplay");
+    const winnerDisplayModal = document.querySelector(".winnerDisplay");
 
 
     const addDataBtn = document.querySelector(".addDataBtn");
@@ -28,7 +28,7 @@ const data = (function () {
 
 
     // Winner Message DOM elements
-    winnerMessage = document.querySelector(".winnerMessage")
+    const winnerMessage = document.querySelector(".winnerMessage")
     const restartGameBtn = document.querySelector(".restartGameBtn")
 
     // Player to move elements
@@ -80,18 +80,16 @@ const data = (function () {
         });
 
         submitPlayerTwoBtn.addEventListener("click", function() {
-
             playerTwoModal.close();
 
             data.playerTwo.playerName.firstName = pTwoFirstNameInput.value;
             data.playerTwo.playerName.lastName = pTwoLastNameInput.value;
 
-
             gameController.startGame();
+
         });
 
         restartGameBtn.addEventListener("click", function() {
-            
             winnerDisplayModal.close();
             gameController.restartGame();
         });
@@ -104,7 +102,7 @@ const data = (function () {
     }
 
 
-    return {playerOne, playerTwo, gameBoard};
+    return {playerOne, playerTwo, gameBoard, gridCells, winnerDisplayModal, winnerMessage};
   
 })();
 
@@ -117,8 +115,8 @@ const gameController = {
     startGame: function() {
         
         if (this.roundCounter % 2 === 0) {
-            data.playerTwo.isMyTurn = true;
             data.playerOne.isMyTurn = false;
+            data.playerTwo.isMyTurn = true;
             
             playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName
             playerToMoveImg.setAttribute("src", "./img/letter-o.png");
@@ -137,10 +135,13 @@ const gameController = {
             data.playerTwo.playerMark = "O"
         }
 
-        
+        this.renderNameAndScore();
+       
+    },
+
+    renderNameAndScore: function () {
         p1NameDisplay.innerHTML = "Player Name: " + data.playerOne.playerName.firstName + " " + data.playerOne.playerName.lastName;
         p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
-
         p2NameDisplay.innerHTML = "Player Name: " + data.playerTwo.playerName.firstName
         + " " + data.playerTwo.playerName.lastName;
         p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
@@ -153,7 +154,7 @@ const gameController = {
                                     ["","",""],
                                     ["","",""]];
         
-        Array.from(gridCells).forEach((cell => {
+        Array.from(data.gridCells).forEach((cell => {
 
             if (cell.firstChild) {
                 cell.removeChild(cell.firstChild);
@@ -182,22 +183,24 @@ const gameController = {
         const isFullCriteria = (gridSquare) => {return gridSquare !== ""}
         brokenDownBoard.every(isFullCriteria); 
     
-        if  ((a === b && b === c && (b === "X" || b === "O")) || (d === e && e === f && (e === "X" || e === "O")) 
-        || (g === h && h === i && (h === "X" || h === "O")) || (a === d && d === g && (d === "X" || d === "O")) 
-        || (b === e && e === h && (e === "X" || e === "O")) || (c === f && f === i && (f === "X" || f === "O")) 
-        || (a === e && e === i && (e === "X" || e === "O")) || (c === e && e === g) && (e === "X" || e === "O")) {
+        const repeatCond = (e === "X" || e === "O");
 
-            let winner = ""
-            if (data.playerOne.isMyTurn === true) {
+        if  ((a === b && b === c && (b === "X" || b === "O")) || (d === e && e === f && repeatCond) 
+        || (g === h && h === i && (h === "X" || h === "O")) || (a === d && d === g && (d === "X" || d === "O")) 
+        || (b === e && e === h && repeatCond) || (c === f && f === i && (f === "X" || f === "O")) 
+        || (a === e && e === i && repeatCond) || (c === e && e === g) && repeatCond) {
+
+            if (data.playerOne.isMyTurn) {
+                
                 winner = data.playerOne;
                 data.playerOne.playerScore++;
-                p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
+                this.renderNameAndScore();
 
             }
             else {
                 winner = data.playerTwo;
                 data.playerTwo.playerScore++;
-                p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
+                this.renderNameAndScore();
             }
 
             this.gameIsOver = true;
@@ -206,13 +209,11 @@ const gameController = {
 
         else if (brokenDownBoard.every(isFullCriteria)) {
             
-            winnerDisplayModal.showModal();
-            winnerMessage.innerHTML = "The Game Ended in a Draw!"
-            // show model with reset point
+            data.winnerDisplayModal.showModal();
+            data.winnerMessage.innerHTML = "The Game Ended in a Draw!"
         }
 
         else {
-
             // continue game
             this.swapPlayerTurns();
         }
@@ -221,20 +222,15 @@ const gameController = {
 
     swapPlayerTurns: function() {
 
-        if (data.playerOne.isMyTurn === true) {
-            data.playerOne.isMyTurn = false;
-            data.playerTwo.isMyTurn = true;
-        }
-        else if (data.playerTwo.isMyTurn === true) {
-            data.playerTwo.isMyTurn = false;
-            data.playerOne.isMyTurn = true;
-        }
+        data.playerOne.isMyTurn = !data.playerOne.isMyTurn;
+        data.playerTwo.isMyTurn = !data.playerTwo.isMyTurn;
+
     },
     
     declareWinner: function(winner) {
 
-        winnerDisplayModal.showModal();
-        winnerMessage.innerHTML = "The winner is " + winner.playerName.firstName
+        data.winnerDisplayModal.showModal();
+        data.winnerMessage.innerHTML = "The winner is " + winner.playerName.firstName
         + ", They now have " + winner.playerScore + " point(s)"
     },
 
@@ -246,7 +242,7 @@ const gameController = {
 
         else {
 
-            if (data.playerOne.isMyTurn === true) {
+            if (data.playerOne.isMyTurn) {
                 sign = "X";
             }
             else {
@@ -280,12 +276,10 @@ const gameController = {
             playerToMoveImg.setAttribute("src", "./img/crossed.png");
         }
             
-        let stringForQuerySelector = "div[data-row = '" + row.toString() + "']" + "[data-col='" + column.toString() +"']";
+        let stringForQuerySelector = "div[data-row = '" + row + "']" + "[data-col='" + column +"']";
         const cellToEdit = document.querySelector(stringForQuerySelector);
         cellToEdit.appendChild(newSymbol);
     }
-
-
 }
 
 gameController.startGame();
