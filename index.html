@@ -32,10 +32,50 @@
             <div class="cell remove-right remove-bottom" data-row = "2" data-col = "2"></div>
         </div>
 
+        <div class="userInfo">
+            <div class="userData">
+                <div class="p1NameDisplay">Player Name:</div>
+                <div class="p1Score">Score:</div>
+            </div>
 
+            <div class="userData">
+                <div class="p2NameDisplay">Player Name:</div>
+                <div class="p2Score">Score:</div>
+            </div>
+        </div>
     </div>
 
+<button class = "addDataBtn" type="button">Track Scores!</button>
 
+<dialog class = "playerOneModal" method="modal">
+        <form>
+            <h2>Who's playing Crosses?</h2>
+        
+        <label for="playerOneFirstName">First Name:</label>
+        <input type="text" name="userInputName" id="playerOneFirstName">
+
+        <label for="playerOneLastName">Last Name:</label>
+        <input type="text" name="userInputLastName" id="playerOneLastName">
+        
+        <button class = "submitPlayerOne" type="button">Confirm</button>
+        </form>
+
+</dialog>
+
+<dialog class = "playerTwoModal" method="modal">
+        <form>
+            <h2>Who's playing Noughts?</h2>
+        
+        <label for="playerTwoFirstName">First Name:</label>
+        <input type="text" name="userInputNameTwo" id="playerTwoFirstName">
+
+        <label for="playerTwoLastName">Last Name:</label>
+        <input type="text" name="userInputLastNameTwo" id="playerTwoLastName">
+        
+        <button class = "submitPlayerTwo" type="button">Confirm</button>
+        </form>
+
+</dialog>
 
 
     

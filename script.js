@@ -2,30 +2,50 @@ const data = (function () {
     //Get Dom Elements
     
     gridCells = document.querySelectorAll(".cell");
-    addListeners();
     
+    const playerOneModal = document.querySelector(".playerOneModal");
+    const playerTwoModal = document.querySelector(".playerTwoModal")
+    
+    const addDataBtn = document.querySelector(".addDataBtn");
+
+    const submitPlayerOneBtn = document.querySelector(".submitPlayerOne")
+    const submitPlayerTwoBtn = document.querySelector(".submitPlayerTwo")
+    
+    // Player Data
+    const pOneFirstNameInput = document.querySelector("#playerOneFirstName")
+    const pOneLastNameInput = document.querySelector("#playerOneLastName")
+    const pTwoFirstNameInput = document.querySelector("#playerTwoFirstName")
+    const pTwoLastNameInput = document.querySelector("#playerTwoLastName")
+
+    // Name and Score
+
+    p1NameDisplay = document.querySelector(".p1NameDisplay");
+    p1ScoreDisplay = document.querySelector(".p1Score");
+    p2NameDisplay = document.querySelector(".p2NameDisplay");
+    p2ScoreDisplay = document.querySelector(".p2Score");
+
+    addListeners();
     
     const gameBoard = {
         gameBoard: [["","",""],
                     ["","",""],
                     ["","",""]],
                 }
- 
-// Player Definitions
+
     const playerOne = {
         playerName: {
-            firstName: "Arminas",
-            lastName: "Bartkus",
+            firstName: "",
+            lastName: "",
         },
         playerScore: 0,
-        playerMark: "X", //make pickable
+        playerMark: "X",
         isMyTurn: null,
     }
 
     const playerTwo = {
         playerName: {
-            firstName: "Emma",
-            lastName: "Beattie",
+            firstName: "",
+            lastName: "",
         },
         playerScore: 0,
         playerMark: "O",
@@ -33,7 +53,31 @@ const data = (function () {
     }
 
     function addListeners() {
-         
+
+        addDataBtn.addEventListener("click", function() {
+            playerOneModal.showModal();
+        });
+        
+        submitPlayerOneBtn.addEventListener("click", function() {
+            playerOneModal.close();
+            playerTwoModal.showModal();
+
+            data.playerOne.playerName.firstName = pOneFirstNameInput.value;
+            data.playerOne.playerName.lastName = pOneLastNameInput.value;
+
+        })
+
+        submitPlayerTwoBtn.addEventListener("click", function() {
+
+            playerTwoModal.close();
+
+            data.playerTwo.playerName.firstName = pTwoFirstNameInput.value;
+            data.playerTwo.playerName.lastName = pTwoLastNameInput.value;
+
+
+            gameController.startGame();
+        })
+
         gridCells.forEach((cell => {
             cell.addEventListener("click", function() {
                 gameController.createMark(cell.dataset.row, cell.dataset.col); 
@@ -48,9 +92,21 @@ const data = (function () {
 
 const gameController = {
 
+    gameIsOver: false,
+
     startGame: function() {
         data.playerOne.isMyTurn = true;
+        
+        p1NameDisplay.innerHTML = "Player Name: " + data.playerOne.playerName.firstName
+        + " " + data.playerOne.playerName.lastName;
+        p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
+
+        p2NameDisplay.innerHTML = "Player Name: " + data.playerTwo.playerName.firstName
+        + " " + data.playerTwo.playerName.lastName;
+        p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
     },
+
+    restartGame: function() {},
 
     checkForOverrideAttempts: function(locationY, locationX) {
         
@@ -63,11 +119,8 @@ const gameController = {
     },
     checkForWin: function(currentGameBoard) {
         
-        console.log(currentGameBoard);
         let [[a, b, c], [d, e, f], [g, h, i]] = currentGameBoard;
 
-        
-        
         let brokenDownBoard = [];
         currentGameBoard.forEach((item) => item.forEach((element) => {brokenDownBoard.push(element)}));
         const isFullCriteria = (gridSquare) => {return gridSquare !== ""}
@@ -88,6 +141,7 @@ const gameController = {
                 data.playerOne.playerScore++;
             }
 
+            this.gameIsOver = true;
             this.declareWinner(winner);
         }
 
@@ -127,7 +181,7 @@ const gameController = {
     
         let sign;
 
-        if(this.checkForOverrideAttempts(row, column)) {}
+        if(this.checkForOverrideAttempts(row, column) || this.gameIsOver) {}
 
         else {
 
@@ -138,34 +192,33 @@ const gameController = {
                 sign = "O";
             }
 
-            //Place x or o at location
-
-            newSymbol = document.createElement("img");
-
-            if (sign === "X") {
-                newSymbol.setAttribute("src", "./img/crossed.png");
-                newSymbol.setAttribute("alt", "A cross");
-            }
-
-            else {
-                newSymbol.setAttribute("src", "./img/letter-o.png");
-                newSymbol.setAttribute("alt", "A nought")
-            }
-            
-            //grid cells is currently global, fix?
-            
-            stringForQuerySelector = "div[data-row = '" + row.toString() + "']" + "[data-col='" + column.toString() +"']";
-            cellToEdit = document.querySelector(stringForQuerySelector);
-            cellToEdit.appendChild(newSymbol);
-
             const currentGameBoard = data.gameBoard.gameBoard;
             const foundRow = currentGameBoard[row];
             foundRow[column] = sign;
-
+        
+        this.createMarkOnDom(sign, row, column);
         this.checkForWin(currentGameBoard);
-
+        
         }
     },
+
+    createMarkOnDom: function(sign, row, column) {
+        
+        let newSymbol = document.createElement("img");
+
+        if (sign === "X") {
+            newSymbol.setAttribute("src", "./img/crossed.png");
+            newSymbol.setAttribute("alt", "A cross");
+        }
+        else {
+            newSymbol.setAttribute("src", "./img/letter-o.png");
+            newSymbol.setAttribute("alt", "A nought")
+        }
+            
+        let stringForQuerySelector = "div[data-row = '" + row.toString() + "']" + "[data-col='" + column.toString() +"']";
+        const cellToEdit = document.querySelector(stringForQuerySelector);
+        cellToEdit.appendChild(newSymbol);
+    }
 }
 
 gameController.startGame();
