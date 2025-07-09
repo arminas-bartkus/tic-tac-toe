@@ -4,18 +4,20 @@ const data = (function () {
     gridCells = document.querySelectorAll(".cell");
     
     const playerOneModal = document.querySelector(".playerOneModal");
-    const playerTwoModal = document.querySelector(".playerTwoModal")
-    
+    const playerTwoModal = document.querySelector(".playerTwoModal");
+    winnerDisplayModal = document.querySelector(".winnerDisplay");
+
+
     const addDataBtn = document.querySelector(".addDataBtn");
 
-    const submitPlayerOneBtn = document.querySelector(".submitPlayerOne")
-    const submitPlayerTwoBtn = document.querySelector(".submitPlayerTwo")
+    const submitPlayerOneBtn = document.querySelector(".submitPlayerOne");
+    const submitPlayerTwoBtn = document.querySelector(".submitPlayerTwo");
     
     // Player Data
-    const pOneFirstNameInput = document.querySelector("#playerOneFirstName")
-    const pOneLastNameInput = document.querySelector("#playerOneLastName")
-    const pTwoFirstNameInput = document.querySelector("#playerTwoFirstName")
-    const pTwoLastNameInput = document.querySelector("#playerTwoLastName")
+    const pOneFirstNameInput = document.querySelector("#playerOneFirstName");
+    const pOneLastNameInput = document.querySelector("#playerOneLastName");
+    const pTwoFirstNameInput = document.querySelector("#playerTwoFirstName");
+    const pTwoLastNameInput = document.querySelector("#playerTwoLastName");
 
     // Name and Score
 
@@ -24,31 +26,41 @@ const data = (function () {
     p2NameDisplay = document.querySelector(".p2NameDisplay");
     p2ScoreDisplay = document.querySelector(".p2Score");
 
+
+    // Winner Message DOM elements
+    winnerMessage = document.querySelector(".winnerMessage")
+    const restartGameBtn = document.querySelector(".restartGameBtn")
+
+    // Player to move elements
+
+    playerToMoveText = document.querySelector(".playerToMoveName")
+    playerToMoveImg = document.querySelector(".playerToMoveImg")
+
     addListeners();
     
     const gameBoard = {
         gameBoard: [["","",""],
                     ["","",""],
-                    ["","",""]],
+                    ["","",""]]
                 }
 
     const playerOne = {
         playerName: {
-            firstName: "",
+            firstName: "Guest 1",
             lastName: "",
         },
         playerScore: 0,
-        playerMark: "X",
+        playerMark: "",
         isMyTurn: null,
     }
 
     const playerTwo = {
         playerName: {
-            firstName: "",
+            firstName: "Guest 2",
             lastName: "",
         },
         playerScore: 0,
-        playerMark: "O",
+        playerMark: "",
         isMyTurn: null,
     }
 
@@ -65,7 +77,7 @@ const data = (function () {
             data.playerOne.playerName.firstName = pOneFirstNameInput.value;
             data.playerOne.playerName.lastName = pOneLastNameInput.value;
 
-        })
+        });
 
         submitPlayerTwoBtn.addEventListener("click", function() {
 
@@ -76,7 +88,13 @@ const data = (function () {
 
 
             gameController.startGame();
-        })
+        });
+
+        restartGameBtn.addEventListener("click", function() {
+            
+            winnerDisplayModal.close();
+            gameController.restartGame();
+        });
 
         gridCells.forEach((cell => {
             cell.addEventListener("click", function() {
@@ -93,12 +111,28 @@ const data = (function () {
 const gameController = {
 
     gameIsOver: false,
+    roundCounter : 1,
+
 
     startGame: function() {
-        data.playerOne.isMyTurn = true;
         
-        p1NameDisplay.innerHTML = "Player Name: " + data.playerOne.playerName.firstName
-        + " " + data.playerOne.playerName.lastName;
+        if (this.roundCounter % 2 === 0) {
+            data.playerTwo.isMyTurn = true;
+            data.playerOne.isMyTurn = false;
+
+            data.playerOne.playerMark = "O";
+            data.playerTwo.playerMark = "X"
+        }
+        else {
+            data.playerOne.isMyTurn = true;
+            data.playerTwo.isMyTurn = false; 
+            
+            data.playerOne.playerMark = "X"
+            data.playerTwo.playerMark = "O"
+        }
+
+        
+        p1NameDisplay.innerHTML = "Player Name: " + data.playerOne.playerName.firstName + " " + data.playerOne.playerName.lastName;
         p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
 
         p2NameDisplay.innerHTML = "Player Name: " + data.playerTwo.playerName.firstName
@@ -106,7 +140,30 @@ const gameController = {
         p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
     },
 
-    restartGame: function() {},
+    restartGame: function() {
+        this.roundCounter++;
+        this.gameIsOver = false;
+        data.gameBoard.gameBoard = [["","",""],
+                                    ["","",""],
+                                    ["","",""]];
+        
+        Array.from(gridCells).forEach((cell => {
+
+            if (cell.firstChild) {
+                cell.removeChild(cell.firstChild);
+            }
+        }));
+    
+            
+            
+            
+            // if (cell.firstChild) {
+            // cell.removeChild(cell.firstChild);
+            // });
+
+        this.startGame();
+
+    },
 
     checkForOverrideAttempts: function(locationY, locationX) {
         
@@ -133,12 +190,15 @@ const gameController = {
 
             let winner = ""
             if (data.playerOne.isMyTurn === true) {
-                winner = data.playerOne.playerName;
+                winner = data.playerOne;
                 data.playerOne.playerScore++;
+                p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
+
             }
             else {
-                winner = data.playerTwo.playerName;
-                data.playerOne.playerScore++;
+                winner = data.playerTwo;
+                data.playerTwo.playerScore++;
+                p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
             }
 
             this.gameIsOver = true;
@@ -147,7 +207,8 @@ const gameController = {
 
         else if (brokenDownBoard.every(isFullCriteria)) {
             
-            console.log("draw");
+            winnerDisplayModal.showModal();
+            winnerMessage.innerHTML = "The Game Ended in a Draw!"
             // show model with reset point
         }
 
@@ -173,8 +234,9 @@ const gameController = {
     
     declareWinner: function(winner) {
 
-        console.log("The winner is " + winner.firstName + " " + winner.lastName)
-        data
+        winnerDisplayModal.showModal();
+        winnerMessage.innerHTML = "The winner is " + winner.playerName.firstName
+        + ", They now have " + winner.playerScore + " point(s)"
     },
 
     createMark: function(row, column) {
@@ -209,16 +271,22 @@ const gameController = {
         if (sign === "X") {
             newSymbol.setAttribute("src", "./img/crossed.png");
             newSymbol.setAttribute("alt", "A cross");
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName
+            playerToMoveImg.setAttribute("src", "./img/letter-o.png");
         }
-        else {
+        else if (sign === "O") {
             newSymbol.setAttribute("src", "./img/letter-o.png");
             newSymbol.setAttribute("alt", "A nought")
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName
+            playerToMoveImg.setAttribute("src", "./img/crossed.png");
         }
             
         let stringForQuerySelector = "div[data-row = '" + row.toString() + "']" + "[data-col='" + column.toString() +"']";
         const cellToEdit = document.querySelector(stringForQuerySelector);
         cellToEdit.appendChild(newSymbol);
     }
+
+
 }
 
 gameController.startGame();
