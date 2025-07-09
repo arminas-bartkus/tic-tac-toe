@@ -119,6 +119,9 @@ const gameController = {
         if (this.roundCounter % 2 === 0) {
             data.playerTwo.isMyTurn = true;
             data.playerOne.isMyTurn = false;
+            
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName
+            playerToMoveImg.setAttribute("src", "./img/letter-o.png");
 
             data.playerOne.playerMark = "O";
             data.playerTwo.playerMark = "X"
@@ -126,6 +129,9 @@ const gameController = {
         else {
             data.playerOne.isMyTurn = true;
             data.playerTwo.isMyTurn = false; 
+
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName
+            playerToMoveImg.setAttribute("src", "./img/crossed.png");
             
             data.playerOne.playerMark = "X"
             data.playerTwo.playerMark = "O"
@@ -154,13 +160,6 @@ const gameController = {
             }
         }));
     
-            
-            
-            
-            // if (cell.firstChild) {
-            // cell.removeChild(cell.firstChild);
-            // });
-
         this.startGame();
 
     },
