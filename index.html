@@ -14,6 +14,8 @@
 
 <body>
 
+    <h1 class="title">Tic-tac-toe</h1>
+
     <div class="grid-container">
         <div class="row1">
             <div class="cell remove-left remove-top" data-row = "0" data-col = "0"></div>
@@ -38,16 +40,24 @@
                 <div class="p1Score">Score:</div>
             </div>
 
+            <div class="playerToMoveSection">
+                <div class="playerToMoveName">Player to Move: </div>
+                <img class ="playerToMoveImg" src="" alt="" >
+            </div>
+
             <div class="userData">
                 <div class="p2NameDisplay">Player Name:</div>
                 <div class="p2Score">Score:</div>
             </div>
+
+           
         </div>
+
+        <button class = "addDataBtn" type="button">Add Names</button>
     </div>
 
-<button class = "addDataBtn" type="button">Track Scores!</button>
 
-<dialog class = "playerOneModal" method="modal">
+<dialog class = "playerOneModal fadeIn-animation" method="modal">
         <form>
             <h2>Who's playing Crosses?</h2>
         
@@ -62,7 +72,7 @@
 
 </dialog>
 
-<dialog class = "playerTwoModal" method="modal">
+<dialog class = "playerTwoModal fadeIn-animation" method="modal">
         <form>
             <h2>Who's playing Noughts?</h2>
         
@@ -77,18 +87,14 @@
 
 </dialog>
 
-<dialog class="winnerDisplay">
+<dialog class="winnerDisplay fadeIn-animation">
 
     <h2 class="winnerMessage"></h2>
     <button class="restartGameBtn" type="button">Play Again!</button>
 
 </dialog>
 
-<div class="playerToMoveSection">
-    <div class="playerToMoveName">Player to Move: </div>
-    <img class ="playerToMoveImg" src="" alt="" >
-</div>
-
+<h6 class="watermark">Created by <a href="https://github.com/arminas-bartkus" target="_blank" rel="noopener noreferrer">Arminas Bartkus</a></h6>
 
     
 </body>

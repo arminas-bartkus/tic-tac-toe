@@ -22,7 +22,7 @@ img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
 }
-input, button, textarea, select {
+input, textarea, select {
   font: inherit;
   padding: 0;
   width: 150px;

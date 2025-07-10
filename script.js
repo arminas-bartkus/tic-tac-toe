@@ -7,7 +7,6 @@ const data = (function () {
     const playerTwoModal = document.querySelector(".playerTwoModal");
     const winnerDisplayModal = document.querySelector(".winnerDisplay");
 
-
     const addDataBtn = document.querySelector(".addDataBtn");
 
     const submitPlayerOneBtn = document.querySelector(".submitPlayerOne");
@@ -28,22 +27,19 @@ const data = (function () {
 
 
     // Winner Message DOM elements
-    const winnerMessage = document.querySelector(".winnerMessage")
-    const restartGameBtn = document.querySelector(".restartGameBtn")
+    const winnerMessage = document.querySelector(".winnerMessage");
+    const restartGameBtn = document.querySelector(".restartGameBtn");
 
     // Player to move elements
 
-    playerToMoveText = document.querySelector(".playerToMoveName")
-    playerToMoveImg = document.querySelector(".playerToMoveImg")
+    playerToMoveText = document.querySelector(".playerToMoveName");
+    playerToMoveImg = document.querySelector(".playerToMoveImg");
 
     addListeners();
     
     const gameBoard = {
-        gameBoard: [["","",""],
-                    ["","",""],
-                    ["","",""]]
+        gameBoard: [["","",""], ["","",""], ["","",""]]
                 }
-
     const playerOne = {
         playerName: {
             firstName: "Guest 1",
@@ -53,7 +49,6 @@ const data = (function () {
         playerMark: "",
         isMyTurn: null,
     }
-
     const playerTwo = {
         playerName: {
             firstName: "Guest 2",
@@ -100,8 +95,6 @@ const data = (function () {
             })
         }));
     }
-
-
     return {playerOne, playerTwo, gameBoard, gridCells, winnerDisplayModal, winnerMessage};
   
 })();
@@ -118,21 +111,21 @@ const gameController = {
             data.playerOne.isMyTurn = false;
             data.playerTwo.isMyTurn = true;
             
-            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName;
             playerToMoveImg.setAttribute("src", "./img/letter-o.png");
 
             data.playerOne.playerMark = "O";
-            data.playerTwo.playerMark = "X"
+            data.playerTwo.playerMark = "X";
         }
         else {
             data.playerOne.isMyTurn = true;
             data.playerTwo.isMyTurn = false; 
 
-            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName;
             playerToMoveImg.setAttribute("src", "./img/crossed.png");
             
-            data.playerOne.playerMark = "X"
-            data.playerTwo.playerMark = "O"
+            data.playerOne.playerMark = "X";
+            data.playerTwo.playerMark = "O";
         }
 
         this.renderNameAndScore();
@@ -140,9 +133,18 @@ const gameController = {
     },
 
     renderNameAndScore: function () {
+
+        if (data.playerOne.playerName.firstName === "" && data.playerOne.playerName.lastName === "") {
+            data.playerOne.playerName.firstName = "<br> Guest 1"
+        }
+
+        if (data.playerTwo.playerName.firstName === "" && data.playerTwo.playerName.lastName === "") {
+            data.playerTwo.playerName.firstName = "<br> Guest 2"
+        }
+
         p1NameDisplay.innerHTML = "Player Name: " + data.playerOne.playerName.firstName + " " + data.playerOne.playerName.lastName;
         p1ScoreDisplay.innerHTML = "Score: " + data.playerOne.playerScore;
-        p2NameDisplay.innerHTML = "Player Name: " + data.playerTwo.playerName.firstName
+        p2NameDisplay.innerHTML = "Player Name: " + data.playerTwo.playerName.firstName;
         + " " + data.playerTwo.playerName.lastName;
         p2ScoreDisplay.innerHTML = "Score: " + data.playerTwo.playerScore;
     },
@@ -150,9 +152,7 @@ const gameController = {
     restartGame: function() {
         this.roundCounter++;
         this.gameIsOver = false;
-        data.gameBoard.gameBoard = [["","",""],
-                                    ["","",""],
-                                    ["","",""]];
+        data.gameBoard.gameBoard = [["","",""], ["","",""], ["","",""]];
         
         Array.from(data.gridCells).forEach((cell => {
 
@@ -165,22 +165,30 @@ const gameController = {
 
     },
 
-    checkForOverrideAttempts: function(locationY, locationX) {
+    getGameBoard: function (locationY, locationX) {
         
         let currentGameBoard = data.gameBoard.gameBoard;
         let currentGameBoardRow = currentGameBoard[locationY];
         let currentGameBoardCell = currentGameBoardRow[locationX];
 
+        return currentGameBoardCell;
+    },
+
+    checkForOverrideAttempts: function(locationY, locationX) {
+        
+        let currentGameBoardCell = this.getGameBoard(locationY, locationX);
+
         if (currentGameBoardCell != "") {return true;}
             // THIS IS IF TRYING TO OVERRIDE
     },
+    
     checkForWin: function(currentGameBoard) {
         
         let [[a, b, c], [d, e, f], [g, h, i]] = currentGameBoard;
 
         let brokenDownBoard = [];
         currentGameBoard.forEach((item) => item.forEach((element) => {brokenDownBoard.push(element)}));
-        const isFullCriteria = (gridSquare) => {return gridSquare !== ""}
+        const isFullCriteria = (gridSquare) => {return gridSquare !== ""};
         brokenDownBoard.every(isFullCriteria); 
     
         const repeatCond = (e === "X" || e === "O");
@@ -210,7 +218,7 @@ const gameController = {
         else if (brokenDownBoard.every(isFullCriteria)) {
             
             data.winnerDisplayModal.showModal();
-            data.winnerMessage.innerHTML = "The Game Ended in a Draw!"
+            data.winnerMessage.innerHTML = "The Game Ended in a Draw!";
         }
 
         else {
@@ -231,12 +239,16 @@ const gameController = {
 
         data.winnerDisplayModal.showModal();
         data.winnerMessage.innerHTML = "The winner is " + winner.playerName.firstName
-        + ", They now have " + winner.playerScore + " point(s)"
+        + ", They now have " + winner.playerScore + " point(s)";
     },
 
     createMark: function(row, column) {
     
         let sign;
+
+        if (this.gameIsOver) {
+            this.restartGame();
+        }
 
         if(this.checkForOverrideAttempts(row, column) || this.gameIsOver) {}
 
@@ -262,17 +274,18 @@ const gameController = {
     createMarkOnDom: function(sign, row, column) {
         
         let newSymbol = document.createElement("img");
-
+        newSymbol.classList.add("fadeInUp-animation");
+        
         if (sign === "X") {
             newSymbol.setAttribute("src", "./img/crossed.png");
             newSymbol.setAttribute("alt", "A cross");
-            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerTwo.playerName.firstName;
             playerToMoveImg.setAttribute("src", "./img/letter-o.png");
         }
         else if (sign === "O") {
             newSymbol.setAttribute("src", "./img/letter-o.png");
-            newSymbol.setAttribute("alt", "A nought")
-            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName
+            newSymbol.setAttribute("alt", "A nought");
+            playerToMoveText.innerHTML = "Player to Move: " + data.playerOne.playerName.firstName;
             playerToMoveImg.setAttribute("src", "./img/crossed.png");
         }
             
