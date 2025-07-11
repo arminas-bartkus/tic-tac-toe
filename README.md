@@ -20,4 +20,4 @@ Credits:
 
 <a href="https://www.flaticon.com/free-icons/letter-o" title="letter o icons">Letter o icons created by Vector Bazar - Flaticon</a>
 
-<a href="arminas-bartkus.github.io/tic-tac-toe" target = "_blank" rel="noopener noreferrer">Live Demo</a>
+<a href="https://arminas-bartkus.github.io/tic-tac-toe" target = "_blank" rel="noopener noreferrer">Live Demo</a>
